@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FICHAS } from "./fichas";
 
 // ---------------------------------------------------------------------------
@@ -72,6 +72,14 @@ export default function ReadingApp() {
   const [marking, setMarking] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [marked, setMarked] = useState(false);
+  const [visitas, setVisitas] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/visitas")
+      .then((r) => r.json())
+      .then((d) => setVisitas(d.visitas))
+      .catch(() => {});
+  }, []);
 
   const totalMarks = ficha.questions.reduce((s, q) => s + q.marks, 0);
   const answeredCount = Object.values(answers).filter((a) => a.trim()).length;
@@ -348,6 +356,7 @@ export default function ReadingApp() {
 
         <footer style={{ textAlign: "center", marginTop: 28, fontSize: 12, color: "#94A3B8" }}>
           Y7 Summer Study Hub · Reading Comprehension · {FICHAS.length} textos + generación con IA
+          {visitas !== null && <div style={{ marginTop: 6 }}>Visitas: {visitas}</div>}
         </footer>
       </div>
     </div>
